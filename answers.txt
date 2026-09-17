@@ -1,0 +1,55 @@
+ Parallel Computing Practical Work
+
+ Part 1 The Phantom Bug
+
+I ran the program 5 times using 4 Java threads. The results were
+
+ Run          Pi 
+    
+ 1     2.7973512 
+ 2    2.85676224 
+ 3    2.83913912 
+ 4    2.84166944 
+ 5    2.84230368 
+
+The results are not close to the real value of pi (3.14159). This happens because all 4 threads update the same `totalHits` variable at the same time. Some updates are lost because of the data race. So, the final number of hits is smaller than it should be.
+
+ Part 2 The Synchronization Trap
+
+I fixed the race condition by using `AtomicLong.incrementAndGet()`.
+
+The execution times were
+
+ Method                 Runtime 
+    
+ Singlethreaded        2289 ms 
+ AtomicLong, 4 threads  1600 ms 
+
+The AtomicLong version gives a correct result close to 3.1415. In my test, the 4thread version was faster than the singlethreaded version. However, using a shared atomic variable still creates synchronization overhead because the threads have to access the same counter.
+
+ Part 3 OpenMPStyle Reduction
+
+For this part, every thread has its own local counter. The local results are added together only after all threads finish.
+
+I used 100,000,000 iterations.
+
+ Threads  Runtime (ms)  Speedup  Efficiency 
+        
+       1          3412    1.00x     100.00% 
+       2          1723    1.98x      99.01% 
+       4          1058    3.22x      80.62% 
+       8           741    4.60x      57.56% 
+      16           483    7.06x      44.15% 
+      32           551    6.19x      19.35% 
+
+The calculated values of pi were all close to 3.1415, so the reduction method worked correctly.
+
+ Questions
+
+ 1. Look at your row for 16 threads. Why didn't your 8core CPU run twice as fast as 8 threads?
+
+My computer has 8 CPU cores, so using 16 threads means that several threads have to share the same cores. This causes extra scheduling and context switching. Because of this, 16 threads cannot give exactly twice the performance of 8 threads.
+
+ 2. Why was the synchronized version in Part 2 slower than running on one single core?
+
+When all threads update the same shared counter, they have to synchronize their access to it. This means that threads sometimes have to wait for each other. The synchronization overhead can reduce the benefit of using multiple threads.
