@@ -1,0 +1,13 @@
+Compute: 1 worker — 0.7684s, 2 — 0.8833s, 4 — 0.9924s
+Memory: 1 worker — 0.5484s, 2 — 0.5525s, 4 — 1.0026s
+Q4.1
+
+The compute workload became slower when more workers were added. The memory workload was almost the same with 1 and 2 workers, but became much slower with 4 workers. This shows CPU overhead and memory bandwidth saturation.
+
+Q4.2
+
+My CPU is an Intel Core i7-13620H with 10 physical cores and 16 logical processors. The results show that adding more workers does not always improve performance because the CPU and memory system have limited resources.
+
+Q4.3
+
+For a memory-bandwidth-limited workload, CPU OpenMP is a reasonable choice because the bottleneck is memory bandwidth, not GPU computing power. A GPU would help more when the workload has high parallel computation and enough data reuse.

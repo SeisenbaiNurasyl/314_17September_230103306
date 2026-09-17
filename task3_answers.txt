@@ -1,0 +1,15 @@
+Q3.1
+
+The unsafe counter can have race conditions because multiple threads can read and update the same value at the same time. The operation LOAD → ADD → STORE is not atomic.
+
+In my test, the final value was 2,000,000, so no lost updates were observed.
+
+Q3.2
+
+The locked version took 0.2270s, while the unsafe version took 0.0774s. The lock caused a 2.93× contention cost.
+
+A better approach is to use thread-local counters and combine the results at the end. This avoids shared mutable state and does not require a lock.
+
+Q3.3
+
+Lockless design is better because threads do not need to wait for each other. Each thread works on its own local data, and the results are combined at the end. This reduces synchronization overhead.

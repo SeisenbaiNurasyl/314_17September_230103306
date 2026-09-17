@@ -1,0 +1,17 @@
+Q2.1
+
+On a 64-bit CPython system, a list stores each reference in 8 bytes. A stride of 16 means:
+
+16 × 8 = 128 bytes
+
+Since a cache line is usually 64 bytes, the elements are separated by two cache lines.
+
+Q2.2
+
+With adjacent indices, threads can modify data in the same cache line. This causes cache coherence traffic between CPU cores. The cache line can repeatedly change ownership under the MESI protocol, which slows the program down.
+
+Q2.3
+
+Padding can reduce false sharing by separating frequently modified variables into different cache lines. In C++, alignas(64) can be used. Java can use @Contended, and Go can add padding fields.
+
+Measured result: padded version was 1.16× faster than the adjacent version.
